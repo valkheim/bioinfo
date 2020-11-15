@@ -4,31 +4,19 @@ import itertools
 from dataclasses import dataclass
 from collections import deque
 
-@dataclass
-class Base:
-    name: str
-    index: int
+import Base
+
 
 
 class Sequence:
     def __init__(self, path):
         self.name = os.path.splitext(os.path.basename(path))[0]
-        self.sequence = ''
+        self.strand = ''
         self.length = 0
         self.bases = []
-        default_distribution = {
-            'total': 0,
-            'frequency': 0
-        }
-        self.distribution = {
-            'A': default_distribution,
-            'C': default_distribution,
-            'G': default_distribution,
-            'T': default_distribution,
-        }
+        self.distribution = {}
         self._parse_from_file(path)
-        print('[+] sequence read')
-
+        self.rna_strand = self.to_rna()
 
     def chunks(self, chunk_size=1):
         bases = iter(self.bases)
@@ -64,15 +52,17 @@ class Sequence:
 
 
     def to_rna(self):
-        return self.sequence.replace('T', 'U')
+        return self.strand.replace('T', 'U')
+
+
 
 
     def distance(self, sequence):
         """ Hamming distance """
-        if len(self.sequence) != len(sequence):
+        if len(self.strand) != len(sequence):
             raise ValueError("len mismatch")
 
-        return sum(a != b for a, b in zip(self.sequence, sequence))
+        return sum(a != b for a, b in zip(self.strand, sequence))
 
     def _parse_from_file(self, path):
         idx = 0
@@ -83,26 +73,30 @@ class Sequence:
                     break
 
                 base = base.upper()
-                if base not in 'ACGT':
-                    continue
-
-                self.sequence += base
-                self.bases.append(Base(base, idx))
-                self.distribution[base]['total'] += 1
+                self.strand += base
+                self.bases.append(Base.Base(base, base, idx))
                 idx += 1
+                try:
+                    self.distribution[base]['total'] += 1
+                except KeyError:
+                    self.distribution[base] = {
+                        'total': 1,
+                        'amount': 0,
+                        'frequency': 0
+                    }
 
         self.length = idx
-        for base in 'ACGT':
+        for base in self.distribution.keys():
             self.distribution[base]['amount'] = self.distribution[base]['total'] / self.length
             self.distribution[base]['frequency'] = self.distribution[base]['amount'] / self.distribution[base]['total'] * 100
 
+    def get_GC_AT_ratios(self):
+        GC = self.distribution['G']['frequency'] + self.distribution['C']['frequency']
+        AT = self.distribution['A']['frequency'] + self.distribution['T']['frequency']
+        return (GC, AT)
 
     def __str__(self):
         dist = ' ; '.join([f"%{k} = {v['frequency']}" for k, v in self.distribution.items()])
-        GC = self.distribution['G']['frequency'] + self.distribution['C']['frequency']
-        AT = self.distribution['A']['frequency'] + self.distribution['T']['frequency']
-        return  f"name:     {self.name}\n" \
+        return  f"name:    {self.name}\n" \
                 f"length:  {self.length}\n" \
-                f"dist:    {dist}\n" \
-                f"         %GC = {GC}\n" \
-                f"         %AT = {AT}"
+                f"dist:    {dist}"
