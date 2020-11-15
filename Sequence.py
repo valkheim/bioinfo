@@ -66,6 +66,14 @@ class Sequence:
     def to_rna(self):
         return self.sequence.replace('T', 'U')
 
+
+    def distance(self, sequence):
+        """ Hamming distance """
+        if len(self.sequence) != len(sequence):
+            raise ValueError("len mismatch")
+
+        return sum(a != b for a, b in zip(self.sequence, sequence))
+
     def _parse_from_file(self, path):
         idx = 0
         with open(path) as fh:
