@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from typing import List
 
-import Sequence
+from . import Sequence
+from . import Base
 
 
 START = [
@@ -49,7 +50,13 @@ AMINO_ACIDS = [
 ]
 
 
-def find_amino_acid(codon):
+def get_amino_acid_from_base(base: Base.Base) -> AminoAcid:
+    for amino_acid in AMINO_ACIDS:
+        if amino_acid.letter == base.letter:
+            return amino_acid
+
+
+def get_amino_acid_from_codon(codon):
     for amino_acid in AMINO_ACIDS:
         if codon in amino_acid.codons:
             return amino_acid
@@ -66,7 +73,7 @@ def get_protein(rna: Sequence.Sequence):
         if codon in STOP:
             return amino_acids
 
-        amino_acid = find_amino_acid(codon)
+        amino_acid = get_amino_acid_from_codon(codon)
         if amino_acid:
             amino_acids.append(amino_acid)
 

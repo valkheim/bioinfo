@@ -4,24 +4,24 @@ import itertools
 from dataclasses import dataclass
 from collections import deque
 
-import Base
+from . import Base
 
 
 
 class Sequence:
-    def __init__(self, path):
-        self.name = os.path.splitext(os.path.basename(path))[0]
+    def __init__(self, strand_str, name='sequence'):
+        self.name = name
         self.strand = ''
         self.length = 0
         self.bases = []
         self.distribution = {}
-        self._parse_from_file(path)
+        self._parse_strand(strand_str)
         self.rna_strand = self.to_rna()
 
     def chunks(self, chunk_size=1):
         bases = iter(self.bases)
         while True:
-            window = tuple(itertools.islice(bases, window_size))
+            window = tuple(itertools.islice(bases, chunk_size))
             if not window:
                 return
 
@@ -31,6 +31,11 @@ class Sequence:
     def walk_chunks(self, fptr, chunk_size=1):
         for chunk in self.chunks(chunk_size):
             fptr(chunk)
+
+
+    def walk_bases(self, fptr):
+        for base in self.bases:
+            fptr(base)
 
 
     def window(self, window_size=1):
@@ -55,8 +60,6 @@ class Sequence:
         return self.strand.replace('T', 'U')
 
 
-
-
     def distance(self, sequence):
         """ Hamming distance """
         if len(self.strand) != len(sequence):
@@ -64,26 +67,22 @@ class Sequence:
 
         return sum(a != b for a, b in zip(self.strand, sequence))
 
-    def _parse_from_file(self, path):
-        idx = 0
-        with open(path) as fh:
-            while True:
-                base = fh.read(1)
-                if not base:
-                    break
 
-                base = base.upper()
-                self.strand += base
-                self.bases.append(Base.Base(base, base, idx))
-                idx += 1
-                try:
-                    self.distribution[base]['total'] += 1
-                except KeyError:
-                    self.distribution[base] = {
-                        'total': 1,
-                        'amount': 0,
-                        'frequency': 0
-                    }
+    def _parse_strand(self, strand_str):
+        idx = 0
+        for base in strand_str:
+            base = base.upper()
+            self.strand += base
+            self.bases.append(Base.Base(base, base, idx))
+            idx += 1
+            try:
+                self.distribution[base]['total'] += 1
+            except KeyError:
+                self.distribution[base] = {
+                    'total': 1,
+                    'amount': 0,
+                    'frequency': 0
+                }
 
         self.length = idx
         for base in self.distribution.keys():

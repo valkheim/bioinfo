@@ -2,7 +2,7 @@
 
 import copy
 import sys
-import Sequence
+import bioinfo.Sequence as Sequence
 
 import matplotlib.pyplot as plt
 
@@ -47,5 +47,6 @@ def plane_walk(seq, compression=1):
 
 
 if __name__ == "__main__":
-    seq = Sequence.Sequence(sys.argv[1])
-    plane_walk(seq, int(seq.length * .01) or 1)
+    with open(sys.argv[1], 'r') as fh:
+        seq = Sequence.Sequence(fh.read(), name='plane')
+        plane_walk(seq, int(seq.length * .01) or 1)
