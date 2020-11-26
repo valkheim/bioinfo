@@ -70,6 +70,10 @@ class Sequence:
             complement_str += self.get_complement_base(base)
         return Sequence(complement_str)
 
+    def invert(self):
+        return Sequence(self.strand[::-1])
+
+
     def to_rna(self):
         return self.strand.replace('T', 'U')
 
