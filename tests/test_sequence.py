@@ -26,3 +26,11 @@ def test_inverse():
 
     _test('', '')
     _test('ACGT', 'TGCA')
+
+
+def test_inverse_complement():
+    def _test(dna_strand, expected):
+        sequence = Sequence.Sequence(dna_strand)
+        assert sequence.complement().invert().strand == expected
+
+    _test('TTGCATACGTAAGCA', 'TGCTTACGTATGCAA')
