@@ -1,3 +1,4 @@
+import re
 import os
 import itertools
 
@@ -5,6 +6,7 @@ from dataclasses import dataclass
 from collections import deque
 
 from . import Base
+from . import data
 
 
 
@@ -72,6 +74,38 @@ class Sequence:
 
     def invert(self):
         return Sequence(self.strand[::-1])
+
+
+    def coding_regions(self):  # aka coding sequence (CDS)
+        coding_regions = []
+        coding_region = ''
+        coding = False
+        for bases in self.chunks(data.CODON_LENGTH):
+            codon = ''.join([ base.letter for base in bases ])
+            if codon in data.STOP:
+                if coding_region:
+                    coding_region += codon
+                    coding_region_length = len(coding_region)
+                    if coding_region_length > 6:  # start + stop
+                        coding_regions.append(coding_region)
+
+                coding_region = ''
+                coding = False
+
+            if codon == data.START[0]:
+                coding_region = data.START[0]
+                coding = True
+
+            if not coding:
+                continue
+
+            if codon == data.START[0] or codon in data.STOP:
+                continue
+
+            coding_region += codon
+
+
+        return coding_regions
 
 
     def to_rna(self):

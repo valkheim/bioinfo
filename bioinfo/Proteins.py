@@ -3,19 +3,7 @@ from typing import List
 
 from . import Sequence
 from . import Base
-
-
-START = [
-    'AUG', # methionine
-    'GUG', # valine
-    'UUG'  # leucine
-]
-
-STOP = [
-    'UAA', # ochre
-    'UAG', # ambre
-    'UGA'  # opale
-]
+from . import data
 
 
 @dataclass
@@ -70,7 +58,7 @@ def get_codons(rna_strand):
 def get_protein(rna: Sequence.Sequence):
     amino_acids = []
     for codon in get_codons(rna.strand):
-        if codon in STOP:
+        if codon in data.STOP:
             return amino_acids
 
         amino_acid = get_amino_acid_from_codon(codon)

@@ -5,4 +5,3 @@ class Base:
     name: str
     letter: str
     index: int
-
