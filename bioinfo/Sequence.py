@@ -55,6 +55,18 @@ class Sequence:
         for frame in self.window(window_size):
             fptr(frame)
 
+    def get_complement_base(self, base):
+        if base.letter == 'A': return 'T'
+        if base.letter == 'T': return 'A'
+        if base.letter == 'C': return 'G'
+        if base.letter == 'G': return 'C'
+
+
+    def complement(self):
+        complement_str = ''
+        for base in self.bases:
+            complement_str += self.get_complement_base(base)
+        return Sequence(complement_str)
 
     def to_rna(self):
         return self.strand.replace('T', 'U')

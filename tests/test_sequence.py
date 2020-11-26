@@ -9,3 +9,11 @@ def test_dna_to_rna():
 
     _test('CAGCTGACTTTACTTCAGTA', 'CAGCUGACUUUACUUCAGUA')
     _test('CCTCATAAGC', 'CCUCAUAAGC')
+
+
+def test_complement():
+    def _test(dna_strand, expected):
+        sequence = Sequence.Sequence(dna_strand)
+        assert sequence.complement().strand == expected
+
+    _test('CAATCGTTACGTTA', 'GTTAGCAATGCAAT')
