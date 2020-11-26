@@ -57,3 +57,13 @@ def test_get_amino_acid_map():
     ]
     assert amino_acids == expected
 
+
+def test_get_amino_acid_alphabet():
+    sequence = Sequence.Sequence('TACTCATTATTTTTGTAG')
+    alphabet = ''
+    for codon in Proteins.get_codons(sequence.rna_strand):
+        amino_acid = Proteins.get_amino_acid_from_codon(codon)
+        if amino_acid:
+            alphabet += amino_acid.letter
+
+    assert alphabet == 'YSLFL'
