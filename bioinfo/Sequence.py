@@ -56,6 +56,8 @@ class Sequence:
             fptr(frame)
 
     def get_complement_base(self, base):
+        # Adenine - Thymine
+        # Cytosine - Guanin
         if base.letter == 'A': return 'T'
         if base.letter == 'T': return 'A'
         if base.letter == 'C': return 'G'

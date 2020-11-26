@@ -26,7 +26,7 @@ class AminoAcid:
     codons: List[str]
 
 
-AMINO_ACIDS = [
+AMINO_ACIDS = [  # Expresssed with latin alphabet without B, J, O, U, X, Z
     AminoAcid('Alanine',       'Ala', 'A', [ 'GCU', 'GCC', 'GCA', 'GCG' ]),
     AminoAcid('Arginine',      'Arg', 'R', [ 'CGU', 'CGC', 'CGA', 'CGG', 'AGA', 'AGG' ]),
     AminoAcid('Asparagine',    'Asn', 'N', [ 'AAU', 'AAC' ]),

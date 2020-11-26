@@ -28,6 +28,7 @@ def test_get_amino_acid_from_codon():
     assert Proteins.get_amino_acid_from_codon('UAG') == None  # STOP ambre
     assert Proteins.get_amino_acid_from_codon('AUG') == Proteins.AminoAcid(full_name='Methionine', short_name='Met', letter='M', codons=['AUG'])
 
+
 def test_get_amino_acid_map():
     sequence = Sequence.Sequence('ARNDCQEGHILKMFPSTWYV')
     amino_acids = []
