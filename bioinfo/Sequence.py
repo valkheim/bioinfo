@@ -116,14 +116,6 @@ class Sequence:
         return self.strand.replace('T', 'U')
 
 
-    def distance(self, sequence):
-        """ Hamming distance """
-        if len(self.strand) != len(sequence):
-            raise ValueError("len mismatch")
-
-        return sum(a != b for a, b in zip(self.strand, sequence))
-
-
     def walk_coding_regions(self):
         bits = re.split('|'.join(Data.STOP), self.strand)
         bits = []
