@@ -2,23 +2,27 @@ import re
 import os
 import itertools
 
+from typing import List
 from dataclasses import dataclass
 from collections import deque
 
 from . import Base
-from . import data
-
+from . import Data
 
 
 class Sequence:
     def __init__(self, strand_str, name='sequence'):
         self.name = name
-        self.strand = ''
-        self.length = 0
-        self.bases = []
-        self.distribution = {}
-        self._parse_strand(strand_str)
+        self._init_strand(strand_str)
         self.rna_strand = self.to_rna()
+
+
+    def append(self, bases: str):
+        for base in bases:
+            self.strand += base
+
+        self._init_strand(self.strand)
+
 
     def chunks(self, chunk_size=1):
         bases = iter(self.bases)
@@ -55,7 +59,7 @@ class Sequence:
 
     def walk_window(self, fptr, window_size=1):
         for frame in self.window(window_size):
-            fptr(frame)
+            yield fptr(frame)
 
     def get_complement_base(self, base):
         # Adenine - Thymine
@@ -80,9 +84,9 @@ class Sequence:
         coding_regions = []
         coding_region = ''
         coding = False
-        for bases in self.chunks(data.CODON_LENGTH):
+        for bases in self.chunks(Data.CODON_LENGTH):
             codon = ''.join([ base.letter for base in bases ])
-            if codon in data.STOP:
+            if codon in Data.STOP:
                 if coding_region:
                     coding_region += codon
                     coding_region_length = len(coding_region)
@@ -92,14 +96,14 @@ class Sequence:
                 coding_region = ''
                 coding = False
 
-            if codon == data.START[0]:
-                coding_region = data.START[0]
+            if codon == Data.START[0]:
+                coding_region = Data.START[0]
                 coding = True
 
             if not coding:
                 continue
 
-            if codon == data.START[0] or codon in data.STOP:
+            if codon == Data.START[0] or codon in Data.STOP:
                 continue
 
             coding_region += codon
@@ -120,12 +124,35 @@ class Sequence:
         return sum(a != b for a, b in zip(self.strand, sequence))
 
 
-    def _parse_strand(self, strand_str):
+    def walk_coding_regions(self):
+        bits = re.split('|'.join(Data.STOP), self.strand)
+        bits = []
+        for bit in re.split('|'.join(Data.STOP), self.strand):
+            candidate = re.search(f'^{Data.START}', bit)
+            if not candidate:
+                continue
+
+            print(candidate.string)
+            length = len(candidate.string)
+            if length <= 3 or length % 3 != 0:
+                continue
+
+            bits.append(bit[3:])
+
+        return bits
+
+
+    def _init_strand(self, strand_str):
         idx = 0
+        self.strand = ''
+        self.strand = ''
+        self.length = 0
+        self.bases = []
+        self.distribution = {}
         for base in strand_str:
             base = base.upper()
             self.strand += base
-            self.bases.append(Base.Base(base, base, idx))
+            self.bases.append(Data.Base(base, base, idx))
             idx += 1
             try:
                 self.distribution[base]['total'] += 1

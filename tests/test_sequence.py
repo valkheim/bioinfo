@@ -1,5 +1,25 @@
 import bioinfo.Sequence as Sequence
-import bioinfo.data as data
+import bioinfo.Data as Data
+
+
+def test_strand():
+    def _test(sequence, dna_strand, rna_strand, length):
+        assert sequence.strand == dna_strand
+        assert sequence.length == length
+
+    _test(Sequence.Sequence('CAA'), 'CAA', 'CAA', 3)
+    _test(Sequence.Sequence('ATG'), 'ATG', 'AUG', 3)
+
+
+def test_strand_concat():
+    def _test(sequence, strand, bases):
+        assert sequence.strand == strand
+        assert sequence.bases == bases
+
+    sequence = Sequence.Sequence('A')
+    _test(sequence, 'A', [ Data.Base(name='A', letter='A', index=0) ])
+    sequence.append('T')
+    _test(sequence, 'AT', [ Data.Base(name='A', letter='A', index=0), Data.Base(name='T', letter='T', index=1) ])
 
 
 def test_dna_to_rna():
@@ -42,14 +62,14 @@ def test_coding_regions():
         sequence = Sequence.Sequence(dna_strand)
         assert sequence.coding_regions() == expected
 
-    _case(data.STOP[0], [])
-    _case(data.STOP[1], [])
-    _case(data.STOP[2], [])
-    _case('AAA' + data.STOP[0], [])
-    _case(data.START[0] + 'AA' + data.STOP[0], [])
-    _case(data.START[0] + 'AAA' + data.STOP[0], ['AUGAAAUAA'])
-    _case(data.START[0] + data.STOP[0], [])
-    _case(data.START[0] + data.START[0] + data.STOP[0], [])
-    _case(data.START[0] + data.STOP[0] + data.STOP[0], [])
-    _case(data.START[0] + 'AAA' + data.STOP[1] + data.START[0] + 'BBB' + data.STOP[2], ['AUGAAAUAG', 'AUGBBBUGA'])
-    _case(data.START[0] + 'AAA' + data.STOP[0] + 'XXX' + data.START[0] + 'BBB' + data.STOP[1], ['AUGAAAUAA', 'AUGBBBUAG'])
+    _case(Data.STOP[0], [])
+    _case(Data.STOP[1], [])
+    _case(Data.STOP[2], [])
+    _case('AAA' + Data.STOP[0], [])
+    _case(Data.START[0] + 'AA' + Data.STOP[0], [])
+    _case(Data.START[0] + 'AAA' + Data.STOP[0], ['AUGAAAUAA'])
+    _case(Data.START[0] + Data.STOP[0], [])
+    _case(Data.START[0] + Data.START[0] + Data.STOP[0], [])
+    _case(Data.START[0] + Data.STOP[0] + Data.STOP[0], [])
+    _case(Data.START[0] + 'AAA' + Data.STOP[1] + Data.START[0] + 'BBB' + Data.STOP[2], ['AUGAAAUAG', 'AUGBBBUGA'])
+    _case(Data.START[0] + 'AAA' + Data.STOP[0] + 'XXX' + Data.START[0] + 'BBB' + Data.STOP[1], ['AUGAAAUAA', 'AUGBBBUAG'])

@@ -1,5 +1,6 @@
 import bioinfo.Sequence as Sequence
 import bioinfo.Proteins as Proteins
+import bioinfo.Data as Data
 
 
 def _get_amino_acid_names(protein):
@@ -20,13 +21,13 @@ def test_dna_to_protein_with_stop_triplet():
 
 def test_get_codons():
     sequence = Sequence.Sequence('GAAATTCTT')
-    assert list(Proteins.get_codons(sequence.strand)) == ['GAA', 'ATT', 'CTT']
+    assert list(Proteins.get_codons(sequence.strand)) == [ 'GAA', 'ATT', 'CTT' ]
 
 
 def test_get_amino_acid_from_codon():
-    assert Proteins.get_amino_acid_from_codon('AAA') == Proteins.AminoAcid(full_name='Lysine', short_name='Lys', letter='K', codons=['AAA', 'AAG'])
+    assert Proteins.get_amino_acid_from_codon('AAA') == Data.AminoAcid(full_name='Lysine', short_name='Lys', letter='K', codons=['AAA', 'AAG'])
+    assert Proteins.get_amino_acid_from_codon('AUG') == Data.AminoAcid(full_name='Methionine', short_name='Met', letter='M', codons=['AUG'])
     assert Proteins.get_amino_acid_from_codon('UAG') == None  # STOP ambre
-    assert Proteins.get_amino_acid_from_codon('AUG') == Proteins.AminoAcid(full_name='Methionine', short_name='Met', letter='M', codons=['AUG'])
 
 
 def test_get_amino_acid_map():
