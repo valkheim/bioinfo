@@ -7,6 +7,7 @@ class Base:
     name: str
     letter: str
     index: int
+    is_rbs: bool = False  # Ribosome Binding Site
 
 
 @dataclass
