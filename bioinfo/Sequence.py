@@ -170,3 +170,6 @@ class Sequence:
         return  f"name:    {self.name}\n" \
                 f"length:  {self.length}\n" \
                 f"dist:    {dist}"
+
+    def __getitem__(self, key):
+        return self.bases[key]

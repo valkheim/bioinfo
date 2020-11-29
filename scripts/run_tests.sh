@@ -1,1 +1,1 @@
-python -m pytest -x -vvv
+python -m pytest -x -vvv -s

@@ -1,3 +1,4 @@
+import bioinfo.Sequence as Sequence
 import bioinfo.utils as utils
 
 def test_prediction_sensibility():
@@ -45,3 +46,20 @@ def test_hamming_distance():
         'TTGCAGTCCTTAGGCATT',
         5
     )
+
+
+def test_substitution_cost():
+    s1 = Sequence.Sequence('TTCACTATGTA')
+    s2 = Sequence.Sequence('TTAGCTATGTA')
+    assert utils.substitution_cost(s1[2].letter, s2[2].letter) == 1
+    assert utils.substitution_cost(s1[3].letter, s2[3].letter) == 0.5
+    assert utils.substitution_cost(s1[1].letter, s2[6].letter) == 1
+    assert utils.substitution_cost(s1[5].letter, s2[7].letter) == 0
+
+
+def test_cost():
+    s1 = Sequence.Sequence('TTCACTATGTA')
+    s2 = Sequence.Sequence('TTAGCTATGTA')
+    assert s1.length == 11
+    assert s1.length == s2.length
+    #assert utils.compute_cost(s1, s2, s1.length, s2.length) == 1.5  #  too much complexity here
