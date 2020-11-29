@@ -1,0 +1,11 @@
+Transversion:
+  Substitutions C <-> A
+                G <-> T
+                A <-> T
+                C <-> G
+
+Transition:
+  Substitutions A <->G et C <-> T
+  Elles sont plus fréquentes que les transversions
+
+
